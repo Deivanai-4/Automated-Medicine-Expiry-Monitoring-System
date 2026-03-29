@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Alert: Expired Medicines</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; margin: 0; background: #fff5f5; }
+        .navbar { background: #1e293b; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; color: white; }
+        .navbar a { color: #cbd5e1; text-decoration: none; margin-left: 20px; }
+        .container { padding: 40px 5%; }
+        .alert-banner { background: #ef4444; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; text-align: center; }
+        
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; }
+        th, td { padding: 15px; border-bottom: 1px solid #eee; }
+        .warning-text { color: #dc2626; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h3>MediTrack</h3>
+        <div>
+            <a href="/dashboard">Home</a>
+            <a href="/add">Inventory</a>
+            <a href="/all_medicines">Overview</a>
+            <a href="/sales">Sales</a>
+            <a href="/expired" style="color:#ef4444;">Expired</a>
+            <a href="/predict">Predict</a>            
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="alert-banner">
+            ⚠️ ATTENTION: The following medicines have passed their expiry date or are critical.
+        </div>
+
+        <table>
+            <thead style="background: #ef4444; color: white;">
+                <tr>
+                    <th>Medicine Name</th>
+                    <th>Batch</th>
+                    <th>Expiry Date</th>
+                    <th>Qty to Remove</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in medicines %}
+                <tr>
+                    <td>{{ m.medicine_name }}</td>
+                    <td>{{ m.batch_no }}</td>
+                    <td class="warning-text">{{ m.expiry_date }}</td>
+                    <td>{{ m.quantity }}</td>
+                    <td><a href="/delete-medicine/{{ m.id }}" style="color: #ef4444; text-decoration: none; font-weight: bold;">Dispose</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

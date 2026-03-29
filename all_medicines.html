@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Medicines | Overview</title>
+    <style>
+        /* Shared Navbar Styles... */
+        body { font-family: 'Inter', sans-serif; margin: 0; background: #f8fafc; }
+        .navbar { background: #1e293b; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; color: white; }
+        .navbar a { color: #cbd5e1; text-decoration: none; margin-left: 20px; font-weight: 500; }
+        .container { padding: 40px 5%; }
+        
+        .badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+        .safe { background: #dcfce7; color: #166534; }
+        .soon { background: #fef3c7; color: #92400e; }
+        .expired { background: #fee2e2; color: #991b1b; }
+        
+        table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-radius: 12px; overflow: hidden; }
+        th, td { padding: 18px; text-align: left; border-bottom: 1px solid #f1f5f9; }
+        th { background: #f8fafc; color: #475569; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h3>MediTrack</h3>
+        <div>
+            <a href="/dashboard">Home</a>
+            <a href="/add">Inventory</a>
+            <a href="/all_medicines" style="color:white; border-bottom: 2px solid #3b82f6;">Overview</a>
+            <a href="/sales">Sales</a>
+            <a href="/expired">Expired</a>
+            <a href="/predict">Predict</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Full Inventory List</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Medicine Name</th>
+                    <th>Batch</th>
+                    <th>Expiry Date</th>
+                    <th>Stock Level</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in medicines %}
+                <tr>
+                    <td><strong>{{ m.medicine_name }}</strong></td>
+                    <td>{{ m.batch_no }}</td>
+                    <td>{{ m.expiry_date }}</td>
+                    <td>{{ m.quantity }} units</td>
+                    <td>
+                        <span class="badge {{ m.status_class }}">
+                            {{ m.status }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

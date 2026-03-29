@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediTrack | Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            /* Using a high-quality overlay for better text readability */
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(30, 58, 138, 0.7)),
+                        url("static/doc.png");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        /* --- NAV BAR --- */
+        .navbar { background: #1e293b; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; color: white; position: sticky; top: 0; z-index: 1000; }
+        .navbar a { color: #cbd5e1; text-decoration: none; margin-left: 20px; font-weight: 500; transition: 0.3s; }
+
+        /* --- HERO SECTION --- */
+        .hero-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 80px 8% 40px 8%;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 50px;
+        }
+
+        .hero-text {
+            flex: 1;
+            max-width: 600px;
+        }
+
+        h1 {
+            font-size: 72px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+            background: linear-gradient(to right, #ffffff, #93c5fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .quote {
+            font-size: 20px;
+            line-height: 1.6;
+            color: #94a3b8;
+            border-left: 4px solid #3b82f6;
+            padding-left: 20px;
+            margin-bottom: 40px;
+        }
+
+  
+    </style>
+</head>
+<body>
+
+   <div class="navbar">
+    <h3>MediTrack</h3>
+    <div>
+        <a href="/dashboard">Home</a>
+        <a href="/add">Inventory</a>
+        <a href="/all_medicines">Overview</a>
+        <a href="/sales" class="active">Sales</a>
+        <a href="/expired">Expired</a>
+        <a href="/predict">Predict</a>
+        <a href="/logout" style="color: #f87171;">Logout</a>
+    </div>
+</div>
+
+<div class="hero-container">
+    <div class="hero-text">
+        <h1>MediTrack</h1>
+        <div class=" quote">
+            "Managing medicines today ensures healthier tomorrows."
+        </div>
+        <p style="color: #cbd5e1; margin-bottom: 30px;">
+            Your centralized system for tracking inventory, monitoring expiry dates, and managing pharmaceutical sales with precision.
+        </p>
+    </div>
+
+</div>
+
+</body>
+</html>

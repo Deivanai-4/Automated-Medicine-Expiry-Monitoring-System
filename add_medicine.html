@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Inventory | MediTrack</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; margin: 0; background: #f1f5f9; color: #334155; }
+        .navbar { background: #1e293b; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; color: white; }
+        .navbar a { color: #cbd5e1; text-decoration: none; margin-left: 20px; font-weight: 500; transition: 0.3s; }
+        .navbar a:hover, .navbar a.active { color: #3b82f6; }
+        
+        .container { padding: 30px 5%; max-width: 1200px; margin: 0 auto; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        
+        h2 { margin-top: 0; color: #1e293b; border-left: 4px solid #3b82f6; padding-left: 15px; }
+        
+        /* Form Styling */
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        input { padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; width: 100%; box-sizing: border-box; }
+        .btn-submit { background: #2563eb; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%; }
+        .btn-submit:hover { background: #1d4ed8; }
+
+        /* Table Styling */
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; }
+        th { background: #f8fafc; color: #64748b; font-weight: 600; text-align: left; padding: 15px; border-bottom: 2px solid #edf2f7; }
+        td { padding: 15px; border-bottom: 1px solid #edf2f7; }
+        .btn-edit { color: #2563eb; text-decoration: none; font-weight: 600; margin-right: 10px; background: none; border: none; cursor: pointer; }
+        .btn-delete { color: #ef4444; text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h3>MediTrack</h3>
+        <div>
+            <a href="/dashboard">Home</a>
+            <a href="/add" class="active">Inventory</a>
+            <a href="/all_medicines">Overview</a>
+            <a href="/sales">Sales</a>
+            <a href="/expired">Expired</a>
+            <a href="/predict">Predict</a>
+            <a href="/logout" style="color: #f87171;">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2>Add / Update Medicine</h2>
+            <form id="medicineForm" action="/add" method="POST">
+                <input type="hidden" name="id" id="medicine_id">
+                <div class="form-grid">
+                    <input type="text" name="medicine_name" id="name" placeholder="Medicine Name" required>
+                    <input type="text" name="batch_no" id="batch" placeholder="Batch Number" required>
+                    <input type="date" name="expiry_date" id="expiry" required>
+                    <input type="number" name="quantity" id="qty" placeholder="Quantity" required>
+                </div>
+                <button type="submit" class="btn-submit" id="submitBtn">Save to Inventory</button>
+            </form>
+        </div>
+
+        <div class="card" style="padding: 0;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Medicine Name</th>
+                        <th>Batch No</th>
+                        <th>Entry Date</th>
+                        <th>Expiry Date</th>
+                        <th>Quantity</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for med in medicines %}
+                    <tr>
+                        <td><strong>{{ med.medicine_name }}</strong></td>
+                        <td>{{ med.batch_no }}</td>
+                        <td>{{ med.entry_date }}</td>
+                        <td>{{ med.expiry_date }}</td>
+                        <td>{{ med.quantity }}</td>
+                        <td>
+                            <button class="btn-edit" onclick="editMed('{{ med.id }}','{{ med.medicine_name }}','{{ med.batch_no }}','{{ med.expiry_date }}','{{ med.quantity }}')">Edit</button>
+                            <a href="/delete-medicine/{{ med.id }}" class="btn-delete" onclick="return confirm('Remove this medicine?')">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function editMed(id, name, batch, expiry, qty) {
+            document.getElementById('medicine_id').value = id;
+            document.getElementById('name').value = name;
+            document.getElementById('batch').value = batch;
+            document.getElementById('entry').value = entry;
+            document.getElementById('expiry').value = expiry;
+            document.getElementById('qty').value = qty;
+            
+            // Change form action to update
+            document.getElementById('medicineForm').action = "/update-medicine";
+            document.getElementById('submitBtn').innerText = "Update Medicine";
+            document.getElementById('submitBtn').style.background = "#10b981";
+            window.scrollTo(0,0);
+        }
+    </script>
+</body>
+</html>
