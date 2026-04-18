@@ -1,144 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
-<title>Sales Analytics | MediTrack</title>
+<title>MediTrack | Stock Demand Prediction</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
+* { box-sizing: border-box; }
 
-*{
-box-sizing:border-box;
-}
-
-body{
-font-family:'Inter',sans-serif;
-margin:0;
-background:#f1f5f9;
-color:#334155;
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    background: #f1f5f9;
+    color: #1e293b;
 }
 
 /* NAVBAR */
-
-.navbar{
-background:#1e293b;
-padding:15px 5%;
-display:flex;
-justify-content:space-between;
-align-items:center;
-color:white;
-position:sticky;
-top:0;
+.navbar {
+    background: #010916;
+    padding: 15px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    position: relative;
+    z-index: 1000;
 }
 
-.navbar a{
-color:#cbd5e1;
-text-decoration:none;
-margin-left:20px;
-font-weight:500;
-transition:0.3s;
+.nav-links {
+    display: flex;
+    align-items: center;
 }
 
-.navbar a:hover{
-color:#3b82f6;
+.nav-links a {
+    color: #cbd5e1;
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 14px;
+}
+
+.active-link {
+    background: #3b82f6;
+    padding: 8px 15px;
+    border-radius: 6px;
+    color: white !important;
+}
+
+/* ☰ MENU */
+.menu-toggle {
+    display: none;
+    font-size: 26px;
+    cursor: pointer;
 }
 
 /* PAGE */
-
-.container{
-max-width:1200px;
-margin:auto;
-padding:40px 5%;
+.container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
 }
 
-.page-title{
-margin-bottom:30px;
+.glass-card {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
 }
 
-/* STATISTICS CARDS */
-
-.stats-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:20px;
-margin-bottom:40px;
+/* SEARCH */
+.search-pill {
+    display: flex;
+    background: white;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid #e2e8f0;
+    width: 380px;
+    margin: 25px 0;
 }
 
-.stat-card{
-background:white;
-padding:25px;
-border-radius:12px;
-box-shadow:0 4px 8px rgba(0,0,0,0.05);
+.search-pill input {
+    border: none;
+    flex: 1;
+    padding: 10px;
+    outline: none;
 }
 
-.stat-card p{
-margin:0;
-color:#64748b;
-font-size:14px;
+.search-pill button {
+    background: #4f46e5;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 999px;
 }
 
-.stat-card h2{
-margin-top:8px;
-color:#10b981;
+/* GRAPH */
+.chart-container {
+    position: relative;
+    height: 480px;
 }
 
-/* TABLE */
+/* 📱 MOBILE FIX */
+@media (max-width: 768px) {
 
-.table-card{
-background:white;
-padding:25px;
-border-radius:12px;
-box-shadow:0 4px 8px rgba(0,0,0,0.05);
-margin-bottom:40px;
-}
+    .menu-toggle {
+        display: block;
+    }
 
-table{
-width:100%;
-border-collapse:collapse;
-}
+    /* 🔥 DROPDOWN FIX */
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 65px;   /* 🔥 BELOW NAVBAR */
+        left: 0;
+        width: 100%;
+        background: #010916;
+        padding: 10px 20px;
+        z-index: 999;
+        border-top: 1px solid #1e293b;
+    }
 
-th{
-background:#f8fafc;
-padding:14px;
-text-align:left;
-font-size:13px;
-border-bottom:2px solid #e2e8f0;
-}
+    .nav-links.active {
+        display: flex;
+    }
 
-td{
-padding:14px;
-border-bottom:1px solid #f1f5f9;
-}
+    .nav-links a {
+        padding: 12px 0;
+        margin: 0;
+        border-bottom: 1px solid #1e293b;
+    }
 
-/* CHARTS */
+    /* 🔥 CONTENT PUSH DOWN */
+    .nav-links.active ~ .container {
+        margin-top: 200px;
+    }
 
-.chart-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:30px;
-}
+    /* GRAPH BIG */
+    .chart-container {
+        height: 520px;
+    }
 
-.chart-card{
-background:white;
-padding:25px;
-border-radius:12px;
-box-shadow:0 4px 8px rgba(0,0,0,0.05);
-}
+    canvas {
+        width: 100% !important;
+        height: 100% !important;
+    }
 
-canvas{
-margin-top:10px;
-}
-
-/* FOOTER */
-
-.footer{
-text-align:center;
-margin-top:40px;
-color:#94a3b8;
-font-size:13px;
+    .search-pill {
+        width: 100%;
+    }
 }
 
 </style>
@@ -148,219 +159,70 @@ font-size:13px;
 
 <div class="navbar">
 
-<h3>MediTrack</h3>
+    <!-- LOGO -->
+    <div>
+        <img src="{{ url_for('static', filename='logo.png') }}"
+             style="width:65px; height:55px;">
+    </div>
 
-<div>
-<a href="/dashboard">Home</a>
-<a href="/add">Inventory</a>
-<a href="/all_medicines">Overview</a>
-<a href="/sales">Sales</a>
-<a href="/expired">Expired</a>
-<a href="/sales-prediction" style="color:#3b82f6;">Prediction</a>
-<a href="/logout" style="color:#f87171;">Logout</a>
-</div>
+    <!-- ☰ -->
+    <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+
+    <!-- LINKS -->
+    <div class="nav-links" id="navLinks">
+        <a href="/dashboard">Home</a>
+        <a href="/add">Add Medicine</a>
+        <a href="/all_medicines">All Medicines</a>
+        <a href="/sales">Sales</a>
+        <a href="/expired">Expired</a>
+        <a href="/sales-prediction">Prediction</a>
+        <a href="/notifications">🔔</a>
+        <a href="/logout" style="color:#f87171;">Logout</a>
+    </div>
 
 </div>
 
 <div class="container">
+<div class="glass-card">
 
-<h2 class="page-title">Medicine Sales Analytics & Prediction</h2>
-{% if is_search %}
-<div style="
-background:#fee2e2;
-color:#991b1b;
-padding:12px;
-border-radius:8px;
-margin-bottom:20px;
-font-weight:600;
-">
-Focused Analytics for "{{ search }}"
-</div>
-{% endif %}
-<div style="margin-bottom:25px; display:flex; gap:10px;">
+<h2>Stock Demand Prediction</h2>
 
-<form method="GET" action="/sales-prediction" style="display:flex; gap:10px; width:100%;">
-
-<input type="text" name="search" placeholder="Search Medicine..." 
-value="{{ search if search else '' }}"
-style="flex:1; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
-
-<button type="submit" 
-style="background:#3b82f6; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer;">
-Search
-</button>
-
-<a href="/sales-prediction" 
-style="padding:10px 15px; background:#e2e8f0; border-radius:8px; text-decoration:none;">
-Clear
-</a>
-
+<form class="search-pill" action="/prediction" method="GET">
+    <input type="text" name="search" placeholder="Search medicine..."
+           value="{{ search_query if search_query else '' }}">
+    <button type="submit">Predict</button>
 </form>
 
-</div>
-<!-- STATISTICS -->
-
-<div class="stats-grid">
-
-<div class="stat-card">
-<p>Total Sales Quantity</p>
-<h2>{{ total_sales }}</h2>
-</div>
-
-<div class="stat-card">
-<p>Total Medicines</p>
-<h2>{{ med_names|length }}</h2>
-</div>
-
-<div class="stat-card">
-<p>Most Demanded Medicine</p>
-<h2>{{ med_names[0] if med_names else 'N/A' }}</h2>
+<div class="chart-container">
+    <canvas id="predictionChart"></canvas>
 </div>
 
 </div>
-
-<!-- TABLE -->
-
-<div class="table-card">
-
-<h3>Medicine Demand Prediction</h3>
-
-<table>
-
-<tr>
-<th>Medicine Name</th>
-<th>Total Sales</th>
-</tr>
-
-{% for row in prediction %}
-
-{% if not prediction %}
-<tr>
-<td colspan="2" style="text-align:center; color:#94a3b8; padding:20px;">
-No data found for this medicine
-</td>
-</tr>
-{% endif %}
-
-<tr>
-<td>{{ row.medicine_name }}</td>
-<td>
-{{ row.total_sales if row.total_sales > 0 else "0 (No Sales Data)" }}
-</td>
-</tr>
-
-{% endfor %}
-
-</table>
-
-</div>
-
-<!-- CHARTS -->
-
-<div class="chart-grid">
-
-<div class="chart-card">
-
-<h3>Medicine Demand Graph</h3>
-<canvas id="demandChart"></canvas>
-
-</div>
-
-<div class="chart-card">
-
-<h3>Sales Distribution</h3>
-<canvas id="pieChart"></canvas>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="footer">
-MediTrack Analytics Dashboard
 </div>
 
 <script>
-
-var medicines = {{ med_names | safe }};
-var sales = {{ med_sales | safe }};
-
-{% if is_search %}
-
-/* 🎯 SPECIAL CHART FOR SEARCHED MEDICINE */
-
-new Chart(document.getElementById("demandChart"),{
-
-type:'bar',
-
-data:{
-labels:medicines,
-datasets:[{
-label:'Selected Medicine Analytics',
-data:sales,
-backgroundColor:'#ef4444',   // RED highlight
-borderRadius:10,
-barThickness:80
-}]
-},
-
-options:{
-plugins:{
-legend:{display:true}
-},
-scales:{
-y:{
-beginAtZero:true
-}
-}
+function toggleMenu(){
+    document.getElementById("navLinks").classList.toggle("active");
 }
 
+const labels = JSON.parse('{{ med_names | safe }}');
+const values = JSON.parse('{{ med_sales | safe }}');
+const isSearch = {{ 'true' if search_query else 'false' }};
+
+new Chart(document.getElementById('predictionChart'), {
+    type: isSearch ? 'line' : 'bar',
+    data: {
+        labels: labels,
+        datasets: [{
+            data: values
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
+    }
 });
-
-{% else %}
-
-/* NORMAL CHART */
-
-new Chart(document.getElementById("demandChart"),{
-
-type:'bar',
-
-data:{
-labels:medicines,
-datasets:[{
-label:'Sales Quantity',
-data:sales,
-backgroundColor:'#3b82f6'
-}]
-}
-
-});
-
-{% endif %}
-
-
-/* PIE CHART (same for both) */
-
-new Chart(document.getElementById("pieChart"),{
-
-type:'pie',
-
-data:{
-labels:medicines,
-datasets:[{
-data:sales,
-backgroundColor:[
-'#3b82f6',
-'#10b981',
-'#f59e0b',
-'#ef4444',
-'#6366f1'
-]
-}]
-}
-
-});
-
 </script>
 
+</body>
+</html>
