@@ -1,107 +1,334 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Manage Inventory | MediTrack</title>
-    <style>
-        body { font-family: 'Inter', sans-serif; margin: 0; background: #f1f5f9; color: #334155; }
-        .navbar { background: #1e293b; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; color: white; }
-        .navbar a { color: #cbd5e1; text-decoration: none; margin-left: 20px; font-weight: 500; transition: 0.3s; }
-        .navbar a:hover, .navbar a.active { color: #3b82f6; }
-        
-        .container { padding: 30px 5%; max-width: 1200px; margin: 0 auto; }
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 30px; }
-        
-        h2 { margin-top: 0; color: #1e293b; border-left: 4px solid #3b82f6; padding-left: 15px; }
-        
-        /* Form Styling */
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        input { padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; width: 100%; box-sizing: border-box; }
-        .btn-submit { background: #2563eb; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%; }
-        .btn-submit:hover { background: #1d4ed8; }
+<title>Add Medicine</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        /* Table Styling */
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; }
-        th { background: #f8fafc; color: #64748b; font-weight: 600; text-align: left; padding: 15px; border-bottom: 2px solid #edf2f7; }
-        td { padding: 15px; border-bottom: 1px solid #edf2f7; }
-        .btn-edit { color: #2563eb; text-decoration: none; font-weight: 600; margin-right: 10px; background: none; border: none; cursor: pointer; }
-        .btn-delete { color: #ef4444; text-decoration: none; font-weight: 600; }
-    </style>
+<style>
+
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    background:#f8fafc;
+}
+
+/* ✅ NAVBAR */
+.navbar { 
+    background: #050f22; 
+    padding: 1rem 4%; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    color: white;
+    position: relative; /* 🔥 added */
+}
+
+.nav-links {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.nav-links a {
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 6px 10px;
+}
+
+.nav-links a:hover {
+    color: white;
+}
+
+.logout {
+    color: #f87171;
+}
+
+/* 🔥 MENU BUTTON */
+.menu-toggle {
+    display: none;
+    font-size: 26px;
+    cursor: pointer;
+    color: white;
+}
+
+/* 📱 MOBILE NAVBAR ONLY */
+@media (max-width: 768px) {
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .nav-links {
+        display: none; /* 🔥 hide */
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background: #050f22;
+
+        flex-direction: column;
+        align-items: center;
+        padding: 15px 0;
+    }
+
+    .nav-links.active {
+        display: flex; /* 🔥 show */
+    }
+
+    .nav-links a {
+        width: 90%;
+        text-align: center;
+        padding: 12px;
+    }
+}
+
+/* ✅ CONTAINER */
+.container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 20px;
+}
+
+/* ✅ CARD */
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    margin-bottom: 25px;
+}
+
+.delete-btn {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: 0.2s;
+}
+
+.delete-btn:hover {
+    background: #dc2626;
+}
+
+/* ✅ FORM */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+}
+
+/* 📱 MOBILE FORM */
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+input {
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+}
+
+.logo-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-img {
+    width: 80px;
+    height:65px;
+    object-fit: contain;
+}
+
+button {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+button:hover {
+    background: #2563eb;
+}
+
+/* FULL WIDTH BUTTON */
+.form-grid button {
+    grid-column: span 5;
+}
+
+/* 📱 MOBILE BUTTON */
+@media (max-width: 768px) {
+    .form-grid button {
+        grid-column: span 1;
+    }
+}
+
+/* ✅ TABLE */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    min-width: 700px;
+}
+
+th {
+    background: #f1f5f9;
+    padding: 15px;
+    text-align: left;
+}
+
+td {
+    padding: 14px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.delete {
+    color: red;
+    text-decoration: none;
+    margin-left: 10px;
+}
+
+</style>
 </head>
+
 <body>
-    <div class="navbar">
-        <h3>MediTrack</h3>
-        <div>
-            <a href="/dashboard">Home</a>
-            <a href="/add" class="active">Inventory</a>
-            <a href="/all_medicines">Overview</a>
-            <a href="/sales">Sales</a>
-            <a href="/expired">Expired</a>
-            <a href="/predict">Predict</a>
-            <a href="/logout" style="color: #f87171;">Logout</a>
-        </div>
-    </div>
 
-    <div class="container">
-        <div class="card">
-            <h2>Add / Update Medicine</h2>
-            <form id="medicineForm" action="/add" method="POST">
-                <input type="hidden" name="id" id="medicine_id">
-                <div class="form-grid">
-                    <input type="text" name="medicine_name" id="name" placeholder="Medicine Name" required>
-                    <input type="text" name="batch_no" id="batch" placeholder="Batch Number" required>
-                    <input type="date" name="expiry_date" id="expiry" required>
-                    <input type="number" name="quantity" id="qty" placeholder="Quantity" required>
-                </div>
-                <button type="submit" class="btn-submit" id="submitBtn">Save to Inventory</button>
-            </form>
-        </div>
+<!-- ✅ NAVBAR -->
+<div class="navbar">
+    
+<div class="logo-box">
+    <img src="{{ url_for('static', filename='logo.png') }}" class="logo-img">
+</div>
 
-        <div class="card" style="padding: 0;">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Medicine Name</th>
-                        <th>Batch No</th>
-                        <th>Entry Date</th>
-                        <th>Expiry Date</th>
-                        <th>Quantity</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for med in medicines %}
-                    <tr>
-                        <td><strong>{{ med.medicine_name }}</strong></td>
-                        <td>{{ med.batch_no }}</td>
-                        <td>{{ med.entry_date }}</td>
-                        <td>{{ med.expiry_date }}</td>
-                        <td>{{ med.quantity }}</td>
-                        <td>
-                            <button class="btn-edit" onclick="editMed('{{ med.id }}','{{ med.medicine_name }}','{{ med.batch_no }}','{{ med.expiry_date }}','{{ med.quantity }}')">Edit</button>
-                            <a href="/delete-medicine/{{ med.id }}" class="btn-delete" onclick="return confirm('Remove this medicine?')">Delete</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+<!-- ☰ MENU -->
+<div class="menu-toggle" onclick="toggleMenu()">☰</div>
 
-    <script>
-        function editMed(id, name, batch, expiry, qty) {
-            document.getElementById('medicine_id').value = id;
-            document.getElementById('name').value = name;
-            document.getElementById('batch').value = batch;
-            document.getElementById('entry').value = entry;
-            document.getElementById('expiry').value = expiry;
-            document.getElementById('qty').value = qty;
-            
-            // Change form action to update
-            document.getElementById('medicineForm').action = "/update-medicine";
-            document.getElementById('submitBtn').innerText = "Update Medicine";
-            document.getElementById('submitBtn').style.background = "#10b981";
-            window.scrollTo(0,0);
-        }
-    </script>
+<div class="nav-links" id="navLinks">
+    <a href="/dashboard">Home</a>
+    <a href="/add" style="color:white;">Inventory</a>
+    <a href="/all_medicines">Overview</a>
+    <a href="/sales">Sales</a>
+    <a href="/expired">Expired</a>
+    <a href="/prediction">Prediction</a>
+    <a href="/notifications" class="notif-link">
+        🔔
+        {% if notifications|length > 0 %}
+        <span class="badge">{{ notifications|length }}</span>
+        {% endif %}
+    </a>
+    <a href="/logout" class="logout">Logout</a>
+</div>
+
+</div>
+
+<div class="container">
+
+<h2>Add / Update Medicine</h2>
+
+<div class="card">
+<form id="medForm" method="POST" action="/add" class="form-grid">
+
+<input type="hidden" name="id" id="med_id">
+
+<input type="text" name="medicine_name" id="medicine_name" placeholder="Medicine Name" required>
+<input type="text" name="batch_no" id="batch_no" placeholder="Batch No" required>
+<input type="date" name="entry_date" id="entry_date" required>
+<input type="date" name="expiry_date" id="expiry_date" required>
+<input type="number" name="quantity" id="quantity" placeholder="Quantity" required>
+
+<button type="submit" id="submitBtn">Save Medicine</button>
+
+</form>
+</div>
+
+<div class="card">
+<div class="table-container">
+
+<table>
+<thead>
+<tr>
+<th>Medicine</th>
+<th>Batch</th>
+<th>Entry Date</th>
+<th>Expiry</th>
+<th>Qty</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+{% for m in medicines %}
+<tr>
+<td><strong>{{ m.medicine_name }}</strong></td>
+<td>{{ m.batch_no }}</td>
+<td>{{ m.entry_date }}</td>
+<td>{{ m.expiry_date }}</td>
+<td>{{ m.quantity }}</td>
+
+<td>
+<button onclick="editMedicine(
+'{{ m.id }}',
+'{{ m.medicine_name }}',
+'{{ m.batch_no }}',
+'{{ m.entry_date }}',
+'{{ m.expiry_date }}',
+'{{ m.quantity }}'
+)">Edit</button>
+
+<form action="/delete-medicine/{{ m.id }}" method="POST" style="display:inline;">
+    <button type="submit" class="delete-btn"
+        onclick="return confirm('Are you sure to delete this medicine?')">
+        Delete
+    </button>
+</form>
+
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+</div>
+</div>
+
+</div>
+
+<script>
+function editMedicine(id, name, batch, entry, expiry, qty){
+    document.getElementById("med_id").value = id;
+    document.getElementById("medicine_name").value = name;
+    document.getElementById("batch_no").value = batch;
+    document.getElementById("entry_date").value = entry;
+    document.getElementById("expiry_date").value = expiry;
+    document.getElementById("quantity").value = qty;
+
+    document.getElementById("submitBtn").innerText = "Update";
+    document.getElementById("medForm").action = "/update-medicine";
+
+    window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* 🔥 MENU TOGGLE */
+function toggleMenu() {
+    document.getElementById("navLinks").classList.toggle("active");
+}
+</script>
+
 </body>
 </html>
