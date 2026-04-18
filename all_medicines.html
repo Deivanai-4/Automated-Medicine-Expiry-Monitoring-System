@@ -2,65 +2,226 @@
 <html>
 <head>
     <title>All Medicines | Overview</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
-        /* Shared Navbar Styles... */
-        body { font-family: 'Inter', sans-serif; margin: 0; background: #f8fafc; }
-        .navbar { background: #1e293b; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; color: white; }
-        .navbar a { color: #cbd5e1; text-decoration: none; margin-left: 20px; font-weight: 500; }
-        .container { padding: 40px 5%; }
-        
-        .badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
-        .safe { background: #dcfce7; color: #166534; }
-        .soon { background: #fef3c7; color: #92400e; }
-        .expired { background: #fee2e2; color: #991b1b; }
-        
-        table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-radius: 12px; overflow: hidden; }
-        th, td { padding: 18px; text-align: left; border-bottom: 1px solid #f1f5f9; }
-        th { background: #f8fafc; color: #475569; }
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background: #f8fafc;
+        }
+
+        /* ✅ NAVBAR */
+        .navbar {
+            background: #020f25;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            position: relative; /* 🔥 added */
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 10px;
+            margin-left: auto;
+        }
+
+        .nav-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 6px 10px;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        /* 🔥 MENU BUTTON */
+        .menu-toggle {
+            display: none;
+            font-size: 26px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-img {
+            width: 70px;
+            height: 55px;
+            object-fit: contain;
+            background: transparent;
+        }
+
+        /* 📱 MOBILE ONLY */
+        @media (max-width: 768px) {
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                display: none; /* 🔥 hide */
+                position: absolute;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                background: #020f25;
+
+                flex-direction: column;
+                align-items: center;
+                padding: 15px 0;
+            }
+
+            .nav-links.active {
+                display: flex; /* 🔥 show */
+            }
+
+            .nav-links a {
+                width: 90%;
+                text-align: center;
+                padding: 12px;
+            }
+        }
+
+        .container {
+            padding: 30px 5%;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            min-width: 600px;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #475569;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .safe {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .soon {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .expired {
+            background: #fee2e2;
+            color: #991b1b;
+        }
     </style>
 </head>
+
 <body>
+
+    <!-- ✅ NAVBAR -->
     <div class="navbar">
-        <h3>MediTrack</h3>
-        <div>
+
+        <div class="logo-box">
+            <img src="{{ url_for('static', filename='logo.png') }}" class="logo-img">
+        </div>
+
+        <!-- ☰ MENU -->
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+
+        <div class="nav-links" id="navLinks">
             <a href="/dashboard">Home</a>
             <a href="/add">Inventory</a>
-            <a href="/all_medicines" style="color:white; border-bottom: 2px solid #3b82f6;">Overview</a>
+            <a href="/all_medicines" style="color:white; border-bottom:2px solid #3b82f6;">Overview</a>
             <a href="/sales">Sales</a>
             <a href="/expired">Expired</a>
-            <a href="/predict">Predict</a>
+            <a href="/prediction">Prediction</a>
+            <a href="/notifications" class="notif-link">
+                🔔
+                {% if notifications|length > 0 %}
+                <span class="badge">{{ notifications|length }}</span>
+                {% endif %}
+            </a>
             <a href="/logout">Logout</a>
         </div>
     </div>
 
+    <!-- ✅ CONTENT -->
     <div class="container">
         <h1>Full Inventory List</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>Medicine Name</th>
-                    <th>Batch</th>
-                    <th>Expiry Date</th>
-                    <th>Stock Level</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for m in medicines %}
-                <tr>
-                    <td><strong>{{ m.medicine_name }}</strong></td>
-                    <td>{{ m.batch_no }}</td>
-                    <td>{{ m.expiry_date }}</td>
-                    <td>{{ m.quantity }} units</td>
-                    <td>
-                        <span class="badge {{ m.status_class }}">
-                            {{ m.status }}
-                        </span>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Medicine Name</th>
+                        <th>Batch</th>
+                        <th>Entry Date</th>
+                        <th>Expiry Date</th>
+                        <th>Stock Level</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for m in medicines %}
+                    <tr>
+                        <td><strong>{{ m.medicine_name }}</strong></td>
+                        <td>{{ m.batch_no }}</td>
+                        <td>{{ m.entry_date if m.entry_date else 'N/A' }}</td>
+                        <td>{{ m.expiry_date }}</td>
+                        <td>{{ m.quantity }} units</td>
+
+                        <td>
+                            <span class="badge {{ m.status_class }}">
+                                {{ m.status }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
     </div>
+
+<script>
+function toggleMenu() {
+    document.getElementById("navLinks").classList.toggle("active");
+}
+</script>
+
 </body>
 </html>
