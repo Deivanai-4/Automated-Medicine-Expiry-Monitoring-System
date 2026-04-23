@@ -1,312 +1,355 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Add Medicine</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediTrack | Add Medicine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
-<style>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
 
-body {
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-    background:#f8fafc;
-}
+        body {
+            background: #f8fafc;
+            color: #1e293b;
+            min-height: 100vh;
+        }
 
-/* ✅ NAVBAR */
-.navbar { 
-    background: #050f22; 
-    padding: 1rem 4%; 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    color: white;
-    position: relative; /* 🔥 added */
-}
+        /* --- MASTER NAV BAR --- */
+        .nav {
+            background: #040432;
+            backdrop-filter: blur(15px);
+            padding: 0 5%;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
 
-.nav-links {
-    display: flex;
-    gap: 10px;
-    margin-left: auto;
-}
+        .logo-img {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
 
-.nav-links a {
-    color: #cbd5e1;
-    text-decoration: none;
-    font-size: 14px;
-    padding: 6px 10px;
-}
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-.nav-links a:hover {
-    color: white;
-}
+        .nav a {
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            color: #cbd5e1;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+        }
 
-.logout {
-    color: #f87171;
-}
+        .nav a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
 
-/* 🔥 MENU BUTTON */
-.menu-toggle {
-    display: none;
-    font-size: 26px;
-    cursor: pointer;
-    color: white;
-}
+        .nav a.active {
+            color: #60a5fa;
+            background: rgba(59, 130, 246, 0.1);
+        }
 
-/* 📱 MOBILE NAVBAR ONLY */
-@media (max-width: 768px) {
+        /* Notification Styling */
+        .notif-link {
+            position: relative;
+            font-size: 18px;
+        }
 
-    .menu-toggle {
-        display: block;
-    }
+        .badge {
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 10px;
+            font-weight: bold;
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            border: 2px solid #040432;
+        }
 
-    .nav-links {
-        display: none; /* 🔥 hide */
-        position: absolute;
-        top: 60px;
-        left: 0;
-        width: 100%;
-        background: #050f22;
+        .logout-btn {
+            color: #f87171 !important;
+        }
 
-        flex-direction: column;
-        align-items: center;
-        padding: 15px 0;
-    }
+        .menu-toggle {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: white;
+        }
 
-    .nav-links.active {
-        display: flex; /* 🔥 show */
-    }
+        /* --- PAGE CONTENT --- */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
 
-    .nav-links a {
-        width: 90%;
-        text-align: center;
-        padding: 12px;
-    }
-}
+        h2 {
+            margin-bottom: 20px;
+            font-weight: 800;
+            color: #0f172a;
+        }
 
-/* ✅ CONTAINER */
-.container {
-    max-width: 1200px;
-    margin: 30px auto;
-    padding: 20px;
-}
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+        }
 
-/* ✅ CARD */
-.card {
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    margin-bottom: 25px;
-}
+        /* --- FORM STYLING --- */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+        }
 
-.delete-btn {
-    background: #ef4444;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 13px;
-    transition: 0.2s;
-}
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
 
-.delete-btn:hover {
-    background: #dc2626;
-}
+        .input-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-/* ✅ FORM */
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 15px;
-}
+        input {
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            width: 100%;
+            outline: none;
+            transition: border-color 0.2s;
+        }
 
-/* 📱 MOBILE FORM */
-@media (max-width: 768px) {
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-}
+        input:focus {
+            border-color: #3b82f6;
+        }
 
-input {
-    padding: 12px;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-}
+        .submit-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            grid-column: 1 / -1;
+            transition: 0.2s;
+            margin-top: 10px;
+        }
 
-.logo-box {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+        .submit-btn:hover { background: #2563eb; }
 
-.logo-img {
-    width: 80px;
-    height:65px;
-    object-fit: contain;
-}
+        /* --- TABLE STYLING --- */
+        .table-container { width: 100%; overflow-x: auto; }
 
-button {
-    background: #3b82f6;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-}
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
 
-button:hover {
-    background: #2563eb;
-}
+        th {
+            background: #f8fafc;
+            padding: 15px;
+            text-align: left;
+            font-size: 13px;
+            text-transform: uppercase;
+            color: #64748b;
+            border-bottom: 2px solid #e2e8f0;
+        }
 
-/* FULL WIDTH BUTTON */
-.form-grid button {
-    grid-column: span 5;
-}
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+        }
 
-/* 📱 MOBILE BUTTON */
-@media (max-width: 768px) {
-    .form-grid button {
-        grid-column: span 1;
-    }
-}
+        .edit-btn {
+            background: #3b82f6;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            margin-right: 5px;
+        }
 
-/* ✅ TABLE */
-.table-container {
-    width: 100%;
-    overflow-x: auto;
-}
+        .delete-btn {
+            background: #ef4444;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    min-width: 700px;
-}
+        /* --- MOBILE VIEW FIX --- */
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            
+            .nav-links {
+                position: absolute;
+                top: 70px; 
+                left: 0; 
+                width: 100%;
+                background: #040432;
+                flex-direction: column;
+                padding: 10px 0;
+                display: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
 
-th {
-    background: #f1f5f9;
-    padding: 15px;
-    text-align: left;
-}
+            .nav-links.active { display: flex; }
+            
+            /* Bell icon and links left side fix */
+            .nav a { 
+                width: fit-content; 
+                justify-content: flex-start; 
+                padding: 12px 25px; 
+                margin-left: 10px;
+            }
 
-td {
-    padding: 14px;
-    border-bottom: 1px solid #e2e8f0;
-}
-
-.delete {
-    color: red;
-    text-decoration: none;
-    margin-left: 10px;
-}
-
-</style>
+            .notif-link {
+                width: fit-content !important;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
 </head>
-
 <body>
 
-<!-- ✅ NAVBAR -->
-<div class="navbar">
-    
-<div class="logo-box">
-    <img src="{{ url_for('static', filename='logo.png') }}" class="logo-img">
-</div>
-
-<!-- ☰ MENU -->
-<div class="menu-toggle" onclick="toggleMenu()">☰</div>
-
-<div class="nav-links" id="navLinks">
-    <a href="/dashboard">Home</a>
-    <a href="/add" style="color:white;">Inventory</a>
-    <a href="/all_medicines">Overview</a>
-    <a href="/sales">Sales</a>
-    <a href="/expired">Expired</a>
-    <a href="/prediction">Prediction</a>
-    <a href="/notifications" class="notif-link">
-        🔔
-        {% if notifications|length > 0 %}
-        <span class="badge">{{ notifications|length }}</span>
-        {% endif %}
+<nav class="nav">
+    <a href="/dashboard" style="background:none; padding:0;">
+        <img src="{{ url_for('static', filename='logo.png') }}" class="logo-img" alt="Logo">
     </a>
-    <a href="/logout" class="logout">Logout</a>
-</div>
 
-</div>
+    <div class="nav-links" id="navLinks">
+        <a href="/dashboard">Home</a>
+        <a href="/add" class="active">Add Medicine</a>
+        <a href="/all_medicines">All Medicines</a>
+        <a href="/sales">Sales</a>
+        <a href="/expired">Expired</a>
+        <a href="/prediction">Prediction</a>
+
+        <a href="/notifications" class="notif-link">
+            🔔
+            {% if notifications|length > 0 %}
+            <span class="badge">{{ notifications|length }}</span>
+            {% endif %}
+        </a>
+
+        <a href="/logout" class="logout-btn">Logout</a>
+    </div>
+
+    <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+</nav>
 
 <div class="container">
+    <h2>Add / Update Medicine</h2>
 
-<h2>Add / Update Medicine</h2>
+    <div class="card">
+        <form id="medForm" method="POST" action="/add" class="form-grid">
+            <input type="hidden" name="id" id="med_id">
+            
+            <div class="input-group">
+                <label>Medicine Name</label>
+                <input type="text" name="medicine_name" id="medicine_name" required>
+            </div>
 
-<div class="card">
-<form id="medForm" method="POST" action="/add" class="form-grid">
+            <div class="input-group">
+                <label>Batch No</label>
+                <input type="text" name="batch_no" id="batch_no" required>
+            </div>
 
-<input type="hidden" name="id" id="med_id">
+            <div class="input-group">
+                <label>Entry Date</label>
+                <input type="date" name="entry_date" id="entry_date" required>
+            </div>
 
-<input type="text" name="medicine_name" id="medicine_name" placeholder="Medicine Name" required>
-<input type="text" name="batch_no" id="batch_no" placeholder="Batch No" required>
-<input type="date" name="entry_date" id="entry_date" required>
-<input type="date" name="expiry_date" id="expiry_date" required>
-<input type="number" name="quantity" id="quantity" placeholder="Quantity" required>
+            <div class="input-group">
+                <label>Expiry Date</label>
+                <input type="date" name="expiry_date" id="expiry_date" required>
+            </div>
 
-<button type="submit" id="submitBtn">Save Medicine</button>
+            <div class="input-group">
+                <label>Quantity</label>
+                <input type="number" name="quantity" id="quantity" required>
+            </div>
 
-</form>
-</div>
+            <button type="submit" id="submitBtn" class="submit-btn">Save Medicine</button>
+        </form>
+    </div>
 
-<div class="card">
-<div class="table-container">
+    <div class="card">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Medicine</th>
+                        <th>Batch</th>
+                        <th>Entry Date</th>
+                        <th>Expiry</th>
+                        <th>Qty</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in medicines %}
+                    <tr>
+                        <td><strong>{{ m.medicine_name }}</strong></td>
+                        <td>{{ m.batch_no }}</td>
+                        <td>{{ m.entry_date }}</td>
+                        <td>{{ m.expiry_date }}</td>
+                        <td>{{ m.quantity }}</td>
+                        <td>
+                            <button class="edit-btn" onclick="editMedicine(
+                                '{{ m.id }}', '{{ m.medicine_name }}', '{{ m.batch_no }}',
+                                '{{ m.entry_date }}', '{{ m.expiry_date }}', '{{ m.quantity }}'
+                            )">Edit</button>
 
-<table>
-<thead>
-<tr>
-<th>Medicine</th>
-<th>Batch</th>
-<th>Entry Date</th>
-<th>Expiry</th>
-<th>Qty</th>
-<th>Action</th>
-</tr>
-</thead>
-
-<tbody>
-{% for m in medicines %}
-<tr>
-<td><strong>{{ m.medicine_name }}</strong></td>
-<td>{{ m.batch_no }}</td>
-<td>{{ m.entry_date }}</td>
-<td>{{ m.expiry_date }}</td>
-<td>{{ m.quantity }}</td>
-
-<td>
-<button onclick="editMedicine(
-'{{ m.id }}',
-'{{ m.medicine_name }}',
-'{{ m.batch_no }}',
-'{{ m.entry_date }}',
-'{{ m.expiry_date }}',
-'{{ m.quantity }}'
-)">Edit</button>
-
-<form action="/delete-medicine/{{ m.id }}" method="POST" style="display:inline;">
-    <button type="submit" class="delete-btn"
-        onclick="return confirm('Are you sure to delete this medicine?')">
-        Delete
-    </button>
-</form>
-
-</td>
-</tr>
-{% endfor %}
-</tbody>
-</table>
-
-</div>
-</div>
-
+                            <form action="/delete-medicine/{{ m.id }}" method="POST" style="display:inline;">
+                                <button type="submit" class="delete-btn" onclick="return confirm('Delete this medicine?')">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -318,13 +361,11 @@ function editMedicine(id, name, batch, entry, expiry, qty){
     document.getElementById("expiry_date").value = expiry;
     document.getElementById("quantity").value = qty;
 
-    document.getElementById("submitBtn").innerText = "Update";
+    document.getElementById("submitBtn").innerText = "Update Medicine";
     document.getElementById("medForm").action = "/update-medicine";
-
     window.scrollTo({top:0, behavior:'smooth'});
 }
 
-/* 🔥 MENU TOGGLE */
 function toggleMenu() {
     document.getElementById("navLinks").classList.toggle("active");
 }
