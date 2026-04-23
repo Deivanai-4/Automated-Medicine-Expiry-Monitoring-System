@@ -1,5 +1,5 @@
 import json 
-from flask import Flask, render_template, request, session, redirect
+from flask import Flask, render_template, request, session, url_for,redirect
 import mysql.connector
 from datetime import date, datetime
 
@@ -52,23 +52,61 @@ def get_notifications():
             notifications.append(f"{m['medicine_name']} low stock 📉")
     conn.close()
     return notifications   
-
-
-
 @app.route('/', methods=['GET', 'POST'])
 def login():
+    message = request.args.get('message')
     if request.method == 'POST':
-        user = request.form['username']
-        pwd = request.form['password']
-
-        if user == "admin" and pwd == "admin123":
-            session['user'] = user
+        user = request.form.get('username')
+        pwd = request.form.get('password')
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM users WHERE username = %s AND password = %s", (user, pwd))
+        account = cursor.fetchone()
+        conn.close()
+        if account:
+            session['user'] = account['username']
             return redirect('/dashboard')
+        return render_template('login.html', error="Invalid Username or Password!")
+    return render_template('login.html', message=message)
 
-        return render_template('login.html', error="Invalid login")
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        user = request.form.get('username')
+        pwd = request.form.get('password')
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (user, pwd))
+            conn.commit()
+            return redirect(url_for('login', message="Account Created! Login now."))
+        except:
+            return render_template('register.html', error="Username already exists!")
+        finally:
+            conn.close()
+    return render_template('register.html')
 
-    return render_template('login.html')
+@app.route('/forgot', methods=['GET', 'POST'])
+def forgot():
+    if request.method == 'POST':
+        user = request.form.get('username')
+        new_pwd = request.form.get('new_password')
+        
+        # Check if password is not empty
+        if not new_pwd:
+            return render_template('forgot.html', error="Password cannot be empty!")
 
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # Update panrom
+        cursor.execute("UPDATE users SET password = %s WHERE username = %s", (new_pwd, user))
+        conn.commit()
+        conn.close()
+        
+        # url_for ippo work aagum, error varathu
+        return redirect(url_for('login', message="Password Reset Success!"))
+    return render_template('forgot.html')
 
 @app.route('/dashboard')
 def dashboard():
@@ -147,7 +185,7 @@ def add_medicine():
         medicines=medicines,
         notifications=get_notifications()
     )
-@app.route('/delete-medicine/<int:id>', methods=['POST'])
+@app.route('/delete-medicine/<int:id>', methods=['GET', 'POST']) # GET sethachu
 def delete_medicine(id):
     if 'user' not in session:
         return redirect('/')
@@ -159,7 +197,9 @@ def delete_medicine(id):
     conn.commit()
     conn.close()
 
-    return redirect('/add')
+    # Request vandha athe expiry page-ke thirumba poga ithu correct-u
+    return redirect(request.referrer)
+   
 
 @app.route('/update-medicine', methods=['POST'])
 def update_medicine():
@@ -209,8 +249,6 @@ def all_medicines():
         medicines=medicines,
         notifications=get_notifications()
     )
-
-
 @app.route('/sales')
 def sales_page():
     if 'user' not in session:
@@ -222,38 +260,44 @@ def sales_page():
     cursor = conn.cursor(dictionary=True)
 
     if filter_date:
+        # Neenga save pannum bodhu 'expiry_date' column-la dhaan podreenga
+        # Adhanaala inga column name 'expiry_date' nu irukanum
         cursor.execute("SELECT * FROM sales_medicine WHERE expiry_date=%s", (filter_date,))
     else:
         cursor.execute("SELECT * FROM sales_medicine ORDER BY id DESC")
 
     sales = cursor.fetchall()
+
+    # Notification count kaata indha logic help pannum
+    cursor.execute("SELECT * FROM seen_notification")
+    notifications = cursor.fetchall()
+
     conn.close()
 
-    return render_template("sales.html", sales=sales, notifications=get_notifications())
-
+    return render_template("sales.html", sales=sales, notifications=notifications)
 
 @app.route('/save-sales', methods=['POST'])
 def save_sales():
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    # Form-la irundhu vara 'sales_date'-a database-la 'expiry_date' column-la podurom
     cursor.execute("""
         INSERT INTO sales_medicine 
         (medicine_name, batch_no, expiry_date, quantity, status)
         VALUES (%s,%s,%s,%s,%s)
     """, (
-        request.form['medicine_name'],
-        request.form['batch_no'],
-        request.form['expiry_date'],
-        request.form['quantity'],
-        request.form['status']
+        request.form.get('medicine_name'),
+        request.form.get('batch_no'),
+        request.form.get('sales_date'), # HTML-la irukura name correct-a irukanum
+        request.form.get('quantity'),
+        request.form.get('status')
     ))
 
     conn.commit()
     conn.close()
 
     return redirect('/sales')
-
 
 @app.route('/expired')
 def expired_medicines():
@@ -279,21 +323,23 @@ def expired_medicines():
 @app.route('/prediction')
 @app.route('/sales-prediction')   # 🔥 ADD THIS LINE
 def sales_prediction():
+   
     search_query = request.args.get('search')
-    
+    notifications = []  
     if search_query:
         labels = [str(i) for i in range(1, 31)] 
         values = [200, 400, 350, 500, 900, 800]
     else:
         labels = ["Paracetamol", "Amoxicillin", "Ibuprofen", "Metformin"]
         values = [85, 72, 63, 48]
-
+    
     return render_template(
         "prediction.html",
         med_names=json.dumps(labels),
         med_sales=json.dumps(values),
         search_query=search_query,
-        total_count=432
+        total_count=432,
+        notifications=notifications
     )
 @app.route('/clear-sales', methods=['POST'])
 def clear_sales():
