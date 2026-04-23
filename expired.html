@@ -1,212 +1,274 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Alert: Expired Medicines</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediTrack | Expired Medicines</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
         body { 
-            font-family: 'Inter', sans-serif; 
-            margin: 0; 
             background: #fff5f5; 
+            color: #1e293b;
+            min-height: 100vh;
         }
 
-        /* ✅ NAVBAR */
-        .navbar { 
-            background: #010c1e;
-            padding: 15px 5%;
+        /* --- MASTER NAV BAR --- */
+        .nav {
+            background: #040432;
+            backdrop-filter: blur(15px);
+            padding: 0 5%;
+            height: 70px;
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
-            color: white;
-            position: relative;
-        }
-
-        /* LEFT */
-        .nav-left {
-            display: flex;
-            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
         .logo-img {
-            width: 60px;
-            height: 60px;
+            height: 50px;
+            width: auto;
             object-fit: contain;
         }
 
-        /* RIGHT */
         .nav-links {
             display: flex;
-            gap: 15px;
-            margin-left: auto;
+            align-items: center;
+            gap: 10px;
         }
 
-        .nav-links a { 
-            color: #cbd5e1; 
-            text-decoration: none; 
+        .nav a {
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: 500;
             font-size: 14px;
+            color: #cbd5e1;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
         }
 
-        /* 🔥 HAMBURGER */
+        .nav a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .nav a.active {
+            color: #60a5fa;
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        /* Bell Notification Logic */
+        .notif-link {
+            position: relative;
+            font-size: 18px;
+        }
+
+        .badge-count {
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 10px;
+            font-weight: bold;
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            border: 2px solid #040432;
+        }
+
+        .logout-btn {
+            color: #f87171 !important;
+        }
+
         .menu-toggle {
             display: none;
-            font-size: 26px;
+            font-size: 24px;
             cursor: pointer;
+            color: white;
         }
 
-        /* 📱 MOBILE */
-        @media (max-width: 768px) {
-
-            .menu-toggle {
-                display: block;
-            }
-
-            .nav-links {
-                display: none;
-                flex-direction: column;
-                position: absolute;
-                top: 70px;
-                left: 0;
-                width: 100%;
-                background: #010c1e;
-                padding: 10px 20px;
-                border-top: 1px solid #1e293b;
-                z-index: 999;
-            }
-
-            .nav-links.active {
-                display: flex;
-            }
-
-            .nav-links a {
-                padding: 12px 0;
-                border-bottom: 1px solid #1e293b;
-            }
-        }
-
-        /* CONTENT */
+        /* --- CONTENT SECTION --- */
         .container { 
-            padding: 20px 5%; 
+            padding: 40px 5%; 
+            max-width: 1400px;
+            margin: auto;
         }
 
         .alert-banner { 
             background: #ef4444; 
             color: white; 
-            padding: 15px; 
-            border-radius: 8px; 
-            margin-bottom: 20px; 
-            font-weight: bold; 
+            padding: 18px; 
+            border-radius: 12px; 
+            margin-bottom: 30px; 
+            font-weight: 800; 
             text-align: center; 
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .table-wrapper {
+        .table-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .table-container {
+            width: 100%;
             overflow-x: auto;
         }
 
         table { 
             width: 100%; 
             border-collapse: collapse; 
-            background: white; 
-            border-radius: 12px; 
-            overflow: hidden; 
-            min-width: 600px;
+            min-width: 800px;
         }
 
-        th, td { 
-            padding: 12px; 
-            border-bottom: 1px solid #eee; 
+        th { 
+            background: #fef2f2; 
+            padding: 18px 20px; 
             text-align: left;
-            font-size: 14px;
+            font-size: 13px;
+            text-transform: uppercase;
+            color: #991b1b;
+            border-bottom: 2px solid #fee2e2;
         }
 
-        th {
-            background: #ef4444; 
-            color: white;
+        td { 
+            padding: 18px 20px; 
+            border-bottom: 1px solid #f1f5f9; 
+            font-size: 15px;
+            color: #334155;
         }
 
         .warning-text { 
             color: #dc2626; 
-            font-weight: bold; 
+            font-weight: 700; 
         }
 
+        .dispose-link {
+            color: #ef4444;
+            text-decoration: none;
+            font-weight: 700;
+            padding: 6px 12px;
+            border: 1px solid #ef4444;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+
+        .dispose-link:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* --- MOBILE VIEW FIX --- */
         @media (max-width: 768px) {
-            .container { padding: 15px; }
-            .alert-banner { font-size: 14px; padding: 12px; }
-            th, td { font-size: 12px; padding: 10px; }
+            .menu-toggle { display: block; }
+            .nav-links {
+                position: absolute;
+                top: 70px; 
+                left: 0; 
+                width: 100%;
+                background: #040432;
+                flex-direction: column;
+                padding: 10px 0;
+                display: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .nav-links.active { display: flex; }
+            
+            /* Bell and count aligned left in mobile menu */
+            .nav a { 
+                width: fit-content; 
+                justify-content: flex-start; 
+                padding: 12px 25px; 
+                margin-left: 10px;
+            }
+            .notif-link {
+                width: fit-content !important;
+                margin-bottom: 5px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-<div class="navbar">
+<nav class="nav">
+    <a href="/dashboard" style="background:none; padding:0;">
+        <img src="{{ url_for('static', filename='logo.png') }}" class="logo-img" alt="Logo">
+    </a>
 
-    <!-- LEFT -->
-    <div class="nav-left">
-        <img src="{{ url_for('static', filename='logo.png') }}" class="logo-img">
-    </div>
-
-    <!-- ☰ MENU -->
-    <div class="menu-toggle" onclick="toggleMenu()">☰</div>
-
-    <!-- RIGHT -->
     <div class="nav-links" id="navLinks">
         <a href="/dashboard">Home</a>
-        <a href="/add">Inventory</a>
-        <a href="/all_medicines">Overview</a>
+        <a href="/add">Add Medicine</a>
+        <a href="/all_medicines">All Medicines</a>
         <a href="/sales">Sales</a>
-        <a href="/expired">Expired</a>
+        <a href="/expired" class="active">Expired</a>
         <a href="/prediction">Prediction</a>
 
-        <a href="/notifications">
+        <a href="/notifications" class="notif-link">
             🔔
             {% if notifications|length > 0 %}
-            <span class="badge">{{ notifications|length }}</span>
+            <span class="badge-count">{{ notifications|length }}</span>
             {% endif %}
         </a>
 
-        <a href="/logout" style="color:#f87171;">Logout</a>
+        <a href="/logout" class="logout-btn">Logout</a>
     </div>
 
-</div>
+    <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+</nav>
 
 <div class="container">
-
     <div class="alert-banner">
         ⚠️ ATTENTION: Expired or Critical Medicines
     </div>
 
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th>Medicine</th>
-                    <th>Batch</th>
-                    <th>Expiry</th>
-                    <th>Quantity</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for m in medicines %}
-                <tr>
-                    <td>{{ m.medicine_name }}</td>
-                    <td>{{ m.batch_no }}</td>
-                    <td class="warning-text">{{ m.expiry_date }}</td>
-                    <td>{{ m.quantity }}</td>
-                    <td>
-                        <a href="/delete-medicine/{{ m.id }}" 
-                           style="color:#ef4444; font-weight:bold;">
-                           Dispose
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="table-card">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Medicine</th>
+                        <th>Batch</th>
+                        <th>Expiry Date</th>
+                        <th>Quantity</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in medicines %}
+                    <tr>
+                        <td><strong>{{ m.medicine_name }}</strong></td>
+                        <td>{{ m.batch_no }}</td>
+                        <td class="warning-text">{{ m.expiry_date }}</td>
+                        <td>{{ m.quantity }} units</td>
+                        <td>
+                            <a href="/delete-medicine/{{ m.id }}" class="dispose-link" 
+                               onclick="return confirm('Confirm disposal of this medicine?')">
+                                Dispose
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-
 </div>
 
 <script>
