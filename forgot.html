@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reset Password</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            margin: 0; font-family: 'Poppins', sans-serif; 
+            background: url("/static/bg.jpg") no-repeat center center fixed; 
+            background-size: cover; height: 100vh; 
+            display: flex; align-items: center; justify-content: center; 
+            padding: 20px;
+        }
+        .box { 
+            width: 350px; padding: 40px; 
+            background: rgba(255, 255, 255, 0.95); 
+            border-radius: 20px; text-align: center; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2); 
+            backdrop-filter: blur(5px);
+        }
+        h2 { color: #333; margin-bottom: 25px; font-size: 24px; }
+        .input-group { position: relative; margin-bottom: 15px; }
+        input { 
+            width: 100%; padding: 14px; border: 1px solid #ddd; 
+            border-radius: 10px; font-size: 14px; outline: none;
+        }
+        button { 
+            width: 100%; padding: 14px; border: none; border-radius: 10px; 
+            color: white; font-weight: bold; cursor: pointer; 
+            background: #a4bb35; font-size: 16px; transition: 0.3s;
+        }
+        button:hover { background: #375107; }
+        
+        /* --- MOBILE RESPONSIVE --- */
+        @media (max-width: 480px) {
+            .box { width: 100%; max-width: 380px; padding: 45px 25px; }
+            h2 { font-size: 28px; }
+            input { padding: 16px; font-size: 16px; }
+            button { padding: 16px; font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Reset Password</h2>
+        <form method="POST">
+            <div class="input-group">
+                <input type="text" name="username" placeholder="Username" required>
+            </div>
+            <div class="input-group">
+                <input type="password" name="new_password" placeholder="New Password" required>
+            </div>
+            <button type="submit">Update Password</button>
+        </form>
+        <div class="links" style="margin-top:20px;">
+            <a href="/" style="text-decoration:none; color:#2563eb; font-weight: 600;">Back to Login</a>
+        </div>
+    </div>
+</body>
+</html>
