@@ -1,246 +1,226 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MediTrack | Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediTrack | Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+        body {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(30, 58, 138, 0.7)),
+                        url("static/doc.png");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-<style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Inter', sans-serif;
-}
+        /* --- MASTER NAV BAR --- */
+        .nav {
+            background: #040432; 
+            backdrop-filter: blur(15px);
+            padding: 0 5%;
+            height: 70px; 
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
 
-body {
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(30, 58, 138, 0.7)),
-                url("static/doc.png");
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    color: white;
-    min-height: 100vh;
-    overflow-x: hidden;
-}
+        .logo-img {
+            height: 50px; 
+            width: auto;
+            object-fit: contain;
+        }
 
-/* NAV BAR */
-.nav {
-    background: rgb(4, 4, 50);
-    backdrop-filter: blur(15px);
-    padding: 5px 5%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between; /* 🔥 FIX */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 10px; 
+        }
 
-/* LEFT (logo) */
-.logo-img {
-    width: 80px;
-    height:65px;
-    object-fit: contain;
-}
+        .nav a {
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            color: #cbd5e1;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+        }
 
-/* RIGHT NAV LINKS */
-.nav-links {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
+        .nav a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
 
-.nav a {
-    text-decoration: none;
-    padding: 10px 22px;
-    border-radius: 10px;
-    font-weight: 600;
-    font-size: 14px;
-    color: #cbd5e1;
-    transition: 0.3s;
-}
+        .nav a.active {
+            color: #60a5fa; 
+            background: rgba(59, 130, 246, 0.1);
+        }
 
-.nav a:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-}
+        .notif-link {
+            position: relative;
+            font-size: 18px;
+        }
 
-.nav a.active {
-    background:lightblue;
-    color: white;
-}
+        .badge {
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 10px;
+            font-weight: bold;
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            border: 2px solid #040432;
+        }
 
-/* MENU BUTTON */
-.menu-toggle {
-    display: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: white;
-}
+        .logout-btn {
+            color: #f87171 !important; 
+        }
 
-/* 🔔 */
-.badge {
-    background: #ef4444;
-    color: white;
-    border-radius: 50%;
-    padding: 2px 7px;
-    font-size: 11px;
-    position: absolute;
-    top: -5px;
-    right: -8px;
-}
+        .menu-toggle {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: white;
+        }
 
-/* HERO */
-.hero-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 80px 8%;
-    max-width: 1400px;
-    margin: auto;
-}
+        /* --- HERO SECTION --- */
+        .hero-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 100px 8%;
+            max-width: 1400px;
+            margin: auto;
+        }
 
-.hero-text {
-    max-width: 600px;
-}
+        .hero-text {
+            max-width: 700px;
+        }
 
-h1 {
-    font-size: 72px;
-    font-weight: 800;
-    background: linear-gradient(to right, #ffffff, #93c5fd);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
+        h1 {
+            font-size: 82px;
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #ffffff, #93c5fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-.quote {
-    font-size: 20px;
-    color: #94a3b8;
-    border-left: 4px solid #3b82f6;
-    padding-left: 20px;
-    margin-top: 20px;
-}
+        .quote {
+            font-size: 22px;
+            color: #94a3b8;
+            border-left: 4px solid #3b82f6;
+            padding-left: 20px;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
 
-.desc {
-    margin-top: 20px;
-    color: #cbd5e1;
-    line-height: 1.7;
-    font-size: 16px;
-}
+        .desc {
+            margin-top: 20px;
+            color: #cbd5e1;
+            line-height: 1.8;
+            font-size: 17px;
+        }
 
-/* 🔥 MOBILE FIX (ONLY HERE CHANGE) */
-@media (max-width: 768px) {
+        /* --- RESPONSIVE DESIGN --- */
+        @media (max-width: 1024px) {
+            .nav-links { gap: 5px; }
+            .nav a { padding: 8px 10px; font-size: 13px; }
+        }
 
-    .menu-toggle {
-        display: block;
-    }
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            .nav-links { 
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: #040432;
+                flex-direction: column;
+                padding: 10px 0;
+                display: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .nav-links.active { display: flex; }
+            
+            /* Bell icon and links left side orama vara intha fix */
+            .nav a { 
+                width: fit-content; /* Width-a pathi kurachachu, appo thaan bell icon mela badge correct-a irukkum */
+                justify-content: flex-start; 
+                padding: 12px 25px; 
+                margin-left: 10px; /* Orama ottama irukka chinna gap */
+            }
 
-    .nav-links {
-        position: absolute;
-        top: 60px;
-        left: 0;
-        width: 100%;
-        background: #1e293b;
+            .notif-link {
+                width: fit-content !important;
+                margin-bottom: 5px;
+            }
 
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-
-        padding: 15px 0;
-        display: none;
-    }
-
-    .nav-links.active {
-        display: flex;
-    }
-
-    .nav a {
-        width: 90%;
-        text-align: center;
-        padding: 12px;
-    }
-
-    /* 🔥 MAIN FIX */
-    .nav {
-        justify-content: space-between; /* logo left, menu right */
-    }
-
-    .nav-links {
-        order: 3;
-    }
-
-    .hero-container {
-        flex-direction: column;
-        text-align: center;
-        padding: 40px 5%;
-    }
-
-    h1 {
-        font-size: 38px;
-    }
-
-    .quote {
-        font-size: 16px;
-    }
-
-    .desc {
-        font-size: 14px;
-    }
-}
-
-</style>
+            h1 { font-size: 50px; }
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="nav">
+<nav class="nav">
+    <a href="/dashboard" style="background:none; padding:0;">
+        <img src="{{ url_for('static', filename='logo.png') }}" class="logo-img" alt="MediTrack Logo">
+    </a>
 
-    <!-- LEFT LOGO -->
-    <img src="{{ url_for('static', filename='logo.png') }}" class="logo-img">
-
-    <!-- RIGHT NAV -->
     <div class="nav-links" id="navLinks">
-        <a href="/dashboard">Home</a>
+        <a href="/dashboard" class="active">Home</a>
         <a href="/add">Add Medicine</a>
         <a href="/all_medicines">All Medicines</a>
         <a href="/sales">Sales</a>
         <a href="/expired">Expired</a>
         <a href="/prediction">Prediction</a>
 
-        <a href="/notifications">
+        <a href="/notifications" class="notif-link">
             🔔
             {% if notifications|length > 0 %}
             <span class="badge">{{ notifications|length }}</span>
             {% endif %}
         </a>
 
-        <a href="/logout">Logout</a>
+        <a href="/logout" class="logout-btn">Logout</a>
     </div>
 
-    <!-- RIGHT MENU BUTTON -->
     <div class="menu-toggle" onclick="toggleMenu()">☰</div>
-
-</div>
+</nav>
 
 <div class="hero-container">
     <div class="hero-text">
         <h1>MediTrack</h1>
-
         <div class="quote">
             "Managing medicines today ensures healthier tomorrows."
         </div>
-
         <p class="desc">
             Your centralized system for tracking inventory, monitoring expiry dates, and managing pharmaceutical sales.
         </p>
-
         <p class="desc">
             A smart and centralized solution designed to streamline pharmaceutical management. 
             Easily monitor medicine inventory, track expiry dates in real-time, and manage sales 
-            efficiently with accuracy and reliability — ensuring safer operations and better healthcare outcomes.
+            efficiently with accuracy and reliability.
         </p>
     </div>
 </div>
