@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Account</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            margin: 0; font-family: 'Poppins', sans-serif; 
+            background: url("/static/bg.jpg") no-repeat center center fixed; 
+            background-size: cover; height: 100vh; 
+            display: flex; align-items: center; justify-content: center; 
+            padding: 20px;
+        }
+        .box { 
+            width: 350px; padding: 40px; 
+            background: rgba(255, 255, 255, 0.95); 
+            border-radius: 20px; text-align: center; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2); 
+            backdrop-filter: blur(5px);
+        }
+        h2 { color: #333; margin-bottom: 25px; font-size: 24px; }
+        .input-group { position: relative; margin-bottom: 15px; }
+        input { 
+            width: 100%; padding: 14px 45px 14px 15px; 
+            border: 1px solid #ddd; border-radius: 10px; 
+            font-size: 15px; outline: none;
+        }
+        .input-group i { 
+            position: absolute; right: 15px; top: 16px; 
+            cursor: pointer; color: #888; 
+        }
+        button { 
+            width: 100%; padding: 14px; border: none; 
+            border-radius: 10px; color: white; font-weight: bold; 
+            cursor: pointer; font-size: 16px; background: #16a34a;
+            margin-top: 10px; transition: 0.3s;
+        }
+        button:hover { background: #15803d; }
+        .links { margin-top: 25px; font-size: 14px; }
+        .links a { color: #2563eb; text-decoration: none; font-weight: 600; }
+
+        /* --- MOBILE RESPONSIVE --- */
+        @media (max-width: 480px) {
+            .box { width: 100%; max-width: 380px; padding: 45px 25px; }
+            h2 { font-size: 28px; }
+            input { padding: 16px 45px 16px 15px; font-size: 16px; }
+            button { padding: 16px; font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Create Account</h2>
+        {% if error %}<p style="color:red; font-size:13px; margin-bottom:10px;">{{error}}</p>{% endif %}
+        <form method="POST">
+            <div class="input-group">
+                <input type="text" name="username" placeholder="Choose Username" required>
+            </div>
+            <div class="input-group">
+                <input type="password" name="password" id="r1" placeholder="Set Password" required>
+                <i class="fa fa-eye" onclick="toggle('r1', this)"></i>
+            </div>
+            <button type="submit">Register Now</button>
+        </form>
+        <div class="links"><a href="/">Back to Login</a></div>
+    </div>
+    <script>
+        function toggle(id, el) {
+            const x = document.getElementById(id);
+            if (x.type === "password") {
+                x.type = "text";
+                el.classList.remove("fa-eye");
+                el.classList.add("fa-eye-slash");
+            } else {
+                x.type = "password";
+                el.classList.remove("fa-eye-slash");
+                el.classList.add("fa-eye");
+            }
+        }
+    </script>
+</body>
+</html>
