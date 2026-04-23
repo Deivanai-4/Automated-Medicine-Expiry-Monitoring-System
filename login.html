@@ -2,97 +2,135 @@
 <html>
 <head>
     <title>Login</title>
-
-    <!-- ✅ MOBILE IMPORTANT -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            margin: 0;
-            font-family: Arial;
-            background-image: url("/static/bg.jpg");
-            background-size: cover;
-            background-position: center;
+        * { box-sizing: border-box; }
+        
+        body { 
+            margin: 0; 
+            font-family: 'Segoe UI', sans-serif; 
+            background: url("/static/bg.jpg") no-repeat center center fixed; 
+            background-size: cover; 
+            height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px;
         }
 
-        .box {
-            width: 320px;
-            padding: 30px;
-            background: rgba(255,255,255,0.9);
-            margin: 120px auto;
-            border-radius: 10px;
-            text-align: center;
+        /* Desktop View Box */
+        .box { 
+            width: 350px; 
+            padding: 40px; 
+            background: rgba(255, 255, 255, 0.95); 
+            border-radius: 20px; 
+            text-align: center; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+            backdrop-filter: blur(5px);
         }
 
-        input {
-            width: 90%;
-            padding: 8px;
-            margin: 10px 0;
+        h2 { margin-bottom: 20px; color: #333; font-size: 24px; }
+        
+        .input-box { position: relative; margin: 15px 0; }
+        
+        input { 
+            width: 100%; 
+            padding: 14px; 
+            border: 1px solid #ddd; 
+            border-radius: 10px; 
+            outline: none;
+            font-size: 14px;
+            transition: 0.3s;
         }
 
-        button {
-            background: #2c7be5;
-            color: white;
-            padding: 8px 20px;
-            border: none;
-            cursor: pointer;
+        input:focus { border-color: #2563eb; box-shadow: 0 0 5px rgba(37, 99, 235, 0.2); }
+
+        .input-box i { position: absolute; right: 15px; top: 16px; cursor: pointer; color: #777; }
+        
+        button { 
+            width: 100%; 
+            padding: 14px; 
+            background: #2563eb; 
+            color: white; 
+            border: none; 
+            border-radius: 10px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            font-size: 16px;
+            transition: 0.3s;
         }
 
-        .error { color: red; }
+        button:hover { background: #1d4ed8; }
 
-        /* 🔥 PERFECT MOBILE CENTER FIX */
-        @media (max-width: 768px) {
+        .links { margin-top: 25px; font-size: 14px; }
+        .links a { color: #2563eb; text-decoration: none; font-weight: bold; }
 
-            body {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100vh;   /* 🔥 full screen center */
+        /* --- MOBILE VIEW OPTIMIZATION --- */
+        @media (max-width: 480px) {
+            .box { 
+                width: 100%; /* Mobile screen-la full width edukkum */
+                max-width: 380px; /* Over-a perusa aagame oru limit */
+                padding: 45px 25px; /* Mobile-la box oralavu perusa theriyum */
             }
-
-            .box {
-                width: 90%;
-                max-width: 360px;
-                margin: 0;        /* ❌ remove old margin */
-                padding: 25px;
+            
+            h2 { font-size: 28px; } /* Header perusa theriyum */
+            
+            input { 
+                padding: 16px; /* Input box height perusa irukkum */
+                font-size: 16px; 
             }
-
-            input {
-                width: 100%;
-                padding: 12px;
-                font-size: 14px;
-            }
-
-            button {
-                width: 100%;
-                padding: 12px;
-                margin-top: 10px;
-                font-size: 14px;
-            }
-
-            h2 {
-                font-size: 20px;
+            
+            button { 
+                padding: 16px; 
+                font-size: 18px; 
             }
         }
-
     </style>
 </head>
-
 <body>
+    <div class="box">
+        <h2>Login</h2>
+        
+        {% if error %}
+            <p style="color:red; font-size:13px; margin-bottom: 10px;">{{error}}</p>
+        {% endif %}
+        
+        {% if message %}
+            <p style="color:green; font-size:13px; margin-bottom: 10px;">{{message}}</p>
+        {% endif %}
 
-<div class="box">
-    <h2>Medical System Login</h2>
+        <form method="POST">
+            <div class="input-box">
+                <input type="text" name="username" placeholder="Username" required>
+            </div>
+            
+            <div class="input-box">
+                <input type="password" name="password" id="p1" placeholder="Password" required>
+                <i class="fa fa-eye" onclick="toggle('p1', this)"></i>
+            </div>
+            
+            <button type="submit">Login</button>
+        </form>
 
-    {% if error %}
-        <p class="error">{{ error }}</p>
-    {% endif %}
+        <div class="links">
+            <a href="/forgot">Forgot Password?</a> | <a href="/register">Create Account</a>
+        </div>
+    </div>
 
-    <form method="POST">
-        <input type="text" name="username" placeholder="Username" required><br>
-        <input type="password" name="password" placeholder="Password" required><br>
-        <button type="submit">Login</button>
-    </form>
-</div>
-
+    <script>
+        function toggle(id, el) {
+            const x = document.getElementById(id);
+            if (x.type === "password") {
+                x.type = "text";
+                el.classList.remove("fa-eye");
+                el.classList.add("fa-eye-slash");
+            } else {
+                x.type = "password";
+                el.classList.remove("fa-eye-slash");
+                el.classList.add("fa-eye");
+            }
+        }
+    </script>
 </body>
 </html>
